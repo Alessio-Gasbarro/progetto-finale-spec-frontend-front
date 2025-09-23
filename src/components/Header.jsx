@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Big_Logo from "../assets/Big_Logo.png";
 
 export default function Header() {
     return (
         <header>
             <div className="col-30">
-                <h1>Logo</h1>
+                <img src={Big_Logo} alt="" className="head-logo" />
             </div>
             <div className="col-30">
                 <ul>
@@ -14,8 +15,10 @@ export default function Header() {
                     <li><Link to="/preferiti">Preferiti</Link></li>
                 </ul>
             </div>
-            <div className="col-30">
-                <h1>Tasto di Ricerca</h1>
+            <div class="col-30">
+                <a href="/strumenti" class="icon-button">
+                    <i class="fas fa-search"></i>
+                </a>
             </div>
         </header>
     );
