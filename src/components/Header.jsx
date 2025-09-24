@@ -16,9 +16,9 @@ export default function Header() {
                 </ul>
             </div>
             <div class="col-30">
-                <a href="/strumenti" class="icon-button">
+                <Link to="/strumenti" class="icon-button">
                     <i class="fas fa-search"></i>
-                </a>
+                </Link>
             </div>
         </header>
     );

@@ -17,6 +17,10 @@ header {
   border-bottom: 4px solid #fe5416;
 }
 
+body {
+  background-color: lightblue;
+}
+
 .col-30 {
   width: 30%;
   height: 90%;
@@ -72,4 +76,45 @@ header ul li a:hover {
 .icon-button:hover {
   background-color: #333;
   color: white;
+}
+
+.container {
+  background-color: #333;
+  height: 700px;
+  width: 60%;
+  display: flex;
+  justify-self: center;
+  margin-top: 50px;
+}
+
+.container h1 {
+  font-size: 70px;
+}
+
+.container p {
+  font-size: 30px;
+  margin-bottom: 5px;
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  color: white;
+  text-align: center;
+}
+
+.homepic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.homepic img {
+  width: 500px;
+  height: 300px;
+  object-fit: cover;
 }
