@@ -5,16 +5,21 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import Comparatore from "./components/Comparatore";
 import Preferiti from "./components/Preferiti";
+import Prodotti from "./components/Prodotti";
+import { ComparatoreProvider } from "./context/ComparatoreContext"; // importa il provider
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/comparatore" element={<Comparatore />} />
-        <Route path="/preferiti" element={<Preferiti />} />
-      </Routes>
-    </BrowserRouter>
+    <ComparatoreProvider>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/comparatore" element={<Comparatore />} />
+          <Route path="/preferiti" element={<Preferiti />} />
+          <Route path="/strumenti" element={<Prodotti />} />
+        </Routes>
+      </BrowserRouter>
+    </ComparatoreProvider>
   );
 }

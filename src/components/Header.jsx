@@ -15,9 +15,9 @@ export default function Header() {
                     <li><Link to="/preferiti">Preferiti</Link></li>
                 </ul>
             </div>
-            <div class="col-30">
-                <Link to="/strumenti" class="icon-button">
-                    <i class="fas fa-search"></i>
+            <div className="col-30">
+                <Link to="/strumenti" className="icon-button">
+                    <i className="fas fa-search"></i>
                 </Link>
             </div>
         </header>

@@ -18,7 +18,7 @@ header {
 }
 
 body {
-  background-color: lightblue;
+  background-color: rgb(226, 211, 211);
 }
 
 .col-30 {
@@ -79,12 +79,12 @@ header ul li a:hover {
 }
 
 .container {
-  background-color: #333;
+  background-color: #9f8a2b;
   height: 700px;
   width: 60%;
   display: flex;
   justify-self: center;
-  margin-top: 50px;
+  margin-top: 70px;
 }
 
 .container h1 {
@@ -117,4 +117,314 @@ header ul li a:hover {
   width: 500px;
   height: 300px;
   object-fit: cover;
+}
+
+/*Sezione Prodotti*/
+.prodotti-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #111;
+}
+
+.prodotti-page h2 {
+  margin: 0 0 18px 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform .12s ease, box-shadow .12s ease;
+  min-height: 260px;
+}
+
+.card:hover,
+.card:focus-within {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+}
+
+.card-media {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f6f7;
+}
+
+.card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.card-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+}
+
+.card-title {
+  font-size: 1rem;
+  margin: 0;
+  color: #111;
+  line-height: 1.2;
+}
+
+.card-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.chip {
+  background: #efefef;
+  padding: 6px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.card-price {
+  margin-top: auto;
+  font-weight: 700;
+  color: #1a8917;
+  font-size: 0.95rem;
+}
+
+.loader,
+.error,
+.empty {
+  padding: 32px;
+  text-align: center;
+  font-size: 1.05rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.error {
+  color: #8b0000;
+  background: #fff6f6;
+}
+
+.card[tabindex] {
+  outline: none;
+}
+
+.card[tabindex]:focus {
+  box-shadow: 0 0 0 3px rgba(43, 124, 255, 0.18);
+}
+
+@media (max-width: 480px) {
+  .prodotti-page {
+    padding: 16px;
+  }
+
+  .card {
+    min-height: 220px;
+  }
+
+  .card-title {
+    font-size: 0.98rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .prodotti-page h2 {
+    font-size: 1.6rem;
+  }
+}
+
+/*Test*/
+.prodotti-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  justify-self: center;
+  margin-top: 24px;
+  width: 75%;
+}
+
+.prodotto-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  width: 250px;
+  box-shadow: 2px 2px 8px #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #fff;
+}
+
+.prodotto-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.prodotto-card p {
+  font-size: 1rem;
+  margin-bottom: 14px;
+  color: #444;
+}
+
+.prodotto-bottoni {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.prodotto-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #fe5416;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.prodotto-btn:hover,
+.prodotto-btn:focus {
+  background-color: #ff875b;
+  color: #222;
+  outline: none;
+}
+
+/*Comparatore*/
+.comparator-h2 {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 2.4rem;
+  color: #fe5416;
+}
+
+.comparator-p {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.big-comparator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  width: 100%;
+}
+
+.comparatore-container {
+  display: flex;
+  gap: 48px;
+  margin-top: 32px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  position: relative;
+}
+
+.comparatore-card {
+  border: 2px solid #fe5416;
+  border-radius: 18px;
+  padding: 32px 28px;
+  width: 420px;
+  min-height: 600px;
+  background: #fffbe8;
+  box-shadow: 0 4px 24px #ffb97a33;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.comparatore-img {
+  width: 320px;
+  height: 220px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  background: #f3f3f3;
+}
+
+.comparatore-title {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  color: #fe5416;
+  text-align: center;
+}
+
+.comparatore-category {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.comparatore-card p {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.comparatore-btn {
+  margin-top: 18px;
+  padding: 12px 28px;
+  background-color: #fe5416;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.comparatore-btn:hover,
+.comparatore-btn:focus {
+  background-color: #ff875b;
+  color: #222;
+  outline: none;
+}
+
+.comparatore-btn.comparatore-btn-svuota {
+  width: 220px;
+  margin: 40px auto 0 auto;
+  display: block;
+  align-self: center;
+  height: 48px;
+  font-size: 1.1rem;
+  background-color: #bdbdbd;
+  color: #fff;
+}
+
+.comparatore-btn-svuota:hover,
+.comparatore-btn-svuota:focus {
+  background-color: #fe5416;
+  color: #fff;
 }
