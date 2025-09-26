@@ -428,3 +428,53 @@ header ul li a:hover {
   background-color: #fe5416;
   color: #fff;
 }
+
+/*Popup*/
+.popup-notify {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 90vw;
+  padding: 18px 32px;
+  border-radius: 10px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 4px 24px #0002;
+  opacity: 0.97;
+  animation: popup-fadein 0.3s;
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.popup-notify.popup-hide {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px);
+  pointer-events: none;
+}
+
+.popup-success {
+  background: #e7ffe7;
+  color: #1a7a1a;
+  border: 2px solid #4be94b;
+}
+
+.popup-remove {
+  background: #fff2e7;
+  color: #b94a1a;
+  border: 2px solid #fe5416;
+}
+
+@keyframes popup-fadein {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+
+  to {
+    opacity: 0.97;
+    transform: translateX(-50%) translateY(0);
+  }
+}

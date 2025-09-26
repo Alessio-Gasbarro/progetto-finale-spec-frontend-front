@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { useComparatore } from "../context/ComparatoreContext";
 
 export default function Comparatore() {
     const { prodottiComparati, rimuoviDalComparatore, svuotaComparatore } = useComparatore();
+    const [showPopup, setShowPopup] = useState(false);
+    const [hidePopup, setHidePopup] = useState(false);
+
+    const handleRimuovi = (title) => {
+        rimuoviDalComparatore(title);
+        setShowPopup(true);
+        setHidePopup(false);
+        setTimeout(() => setHidePopup(true), 1200);
+        setTimeout(() => setShowPopup(false), 1600);
+    };
+
+    const handleSvuota = () => {
+        svuotaComparatore();
+        setShowPopup(true);
+        setHidePopup(false);
+        setTimeout(() => setHidePopup(true), 1200);
+        setTimeout(() => setShowPopup(false), 1600);
+    };
 
     return (
         <main>
+            {showPopup && (
+                <div className={`popup-notify popup-remove${hidePopup ? " popup-hide" : ""}`}>
+                    Strumento/i rimosso/i dal Comparatore!
+                </div>
+            )}
             <h2 className="comparator-h2">Comparatore</h2>
             {prodottiComparati.length === 0 ? (
                 <p className="comparator-p">Nessun prodotto selezionato per il confronto.</p>
@@ -27,7 +50,7 @@ export default function Comparatore() {
                                 <p>Peso medio: {prodotto.averageWeight} kg</p>
                                 <button
                                     className="comparatore-btn"
-                                    onClick={() => rimuoviDalComparatore(prodotto.title)}
+                                    onClick={() => handleRimuovi(prodotto.title)}
                                 >
                                     Rimuovi
                                 </button>
@@ -36,7 +59,7 @@ export default function Comparatore() {
                     </div>
                     <button
                         className="comparatore-btn comparatore-btn-svuota"
-                        onClick={svuotaComparatore}
+                        onClick={handleSvuota}
                     >
                         Svuota tutto
                     </button>
