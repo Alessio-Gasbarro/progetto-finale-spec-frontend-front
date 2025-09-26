@@ -11,14 +11,15 @@ export function ComparatoreProvider({ children }) {
 
     function aggiungiAlComparatore(prodotto) {
         setProdottiComparati(prev => {
-            if (prev.find(p => p.title === prodotto.title)) return prev;
+            if (prev.find(p => p.id === prodotto.id)) return prev;
             if (prev.length >= 2) return prev;
-            return [...prev, prodotto];
+            // Salva almeno id, title, category per fallback
+            return [...prev, { id: prodotto.id, title: prodotto.title, category: prodotto.category }];
         });
     }
 
-    function rimuoviDalComparatore(title) {
-        setProdottiComparati(prev => prev.filter(p => p.title !== title));
+    function rimuoviDalComparatore(id) {
+        setProdottiComparati(prev => prev.filter(p => p.id !== id));
     }
 
     function svuotaComparatore() {

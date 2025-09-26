@@ -1,66 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useComparatore } from "../context/ComparatoreContext";
+import { fetchInstrument } from "../api/Strumenti";
 
 export default function Comparatore() {
     const { prodottiComparati, rimuoviDalComparatore, svuotaComparatore } = useComparatore();
-    const [showPopup, setShowPopup] = useState(false);
-    const [hidePopup, setHidePopup] = useState(false);
+    const [strumenti, setStrumenti] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const handleRimuovi = (title) => {
-        rimuoviDalComparatore(title);
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
-    };
-
-    const handleSvuota = () => {
-        svuotaComparatore();
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
-    };
+    useEffect(() => {
+        async function caricaStrumenti() {
+            setLoading(true);
+            const dettagli = await Promise.all(
+                prodottiComparati.map(async prodotto => {
+                    const data = await fetchInstrument(prodotto.id);
+                    // Se il backend restituisce un array, prendi il primo elemento
+                    const dettagliCompleti = Array.isArray(data) ? data[0] : data;
+                    return dettagliCompleti || {};
+                })
+            );
+            setStrumenti(dettagli);
+            setLoading(false);
+        }
+        if (prodottiComparati.length > 0) {
+            caricaStrumenti();
+        } else {
+            setStrumenti([]);
+        }
+    }, [prodottiComparati]);
 
     return (
         <main>
-            {showPopup && (
-                <div className={`popup-notify popup-remove${hidePopup ? " popup-hide" : ""}`}>
-                    Strumento/i rimosso/i dal Comparatore!
-                </div>
-            )}
             <h2 className="comparator-h2">Comparatore</h2>
-            {prodottiComparati.length === 0 ? (
+            {strumenti.length === 0 && !loading ? (
                 <p className="comparator-p">Nessun prodotto selezionato per il confronto.</p>
             ) : (
                 <div className="big-comparator">
                     <div className="comparatore-container">
-                        {prodottiComparati.map(prodotto => (
-                            <div key={prodotto.title} className="comparatore-card">
-                                <img
-                                    src={prodotto.image}
-                                    alt={prodotto.title}
-                                    className="comparatore-img"
-                                />
-                                <h3 className="comparatore-title">{prodotto.title}</h3>
-                                <p className="comparatore-category">Categoria: {prodotto.category}</p>
-                                <p>Origine: {prodotto.origin}</p>
-                                <p>Difficoltà: {prodotto.difficulty}</p>
-                                <p>Prezzo medio: {prodotto.averagePrice} €</p>
-                                <p>Peso medio: {prodotto.averageWeight} kg</p>
-                                <button
-                                    className="comparatore-btn"
-                                    onClick={() => handleRimuovi(prodotto.title)}
-                                >
-                                    Rimuovi
-                                </button>
+                        {strumenti.map((s, idx) => {
+                            const m = s.musictool || s;
+                            return (
+                                <div key={m.id || idx} className="comparatore-card">
+                                    {m.image && (
+                                        <img src={m.image} alt={m.title} className="comparatore-img" />
+                                    )}
+                                    <h3 className="comparatore-title">{m.title || "N/A"}</h3>
+                                    <p className="comparatore-category">Categoria: {m.category || "N/A"}</p>
+                                    <p>Origine: {m.origin || "N/A"}</p>
+                                    <p>Difficoltà: {m.difficulty !== undefined ? m.difficulty : "N/A"}</p>
+                                    <p>Prezzo medio: {m.averagePrice !== undefined ? m.averagePrice + " €" : "N/A"}</p>
+                                    <p>Peso medio: {m.averageWeight !== undefined ? m.averageWeight + " kg" : "N/A"}</p>
+                                    <button className="comparatore-btn" onClick={() => rimuoviDalComparatore(m.id)}>
+                                        Rimuovi
+                                    </button>
+                                </div>
+                            );
+                        })}
+                        {loading && (
+                            <div className="comparatore-card">
+                                <p>Caricamento dettagli...</p>
                             </div>
-                        ))}
+                        )}
                     </div>
-                    <button
-                        className="comparatore-btn comparatore-btn-svuota"
-                        onClick={handleSvuota}
-                    >
+                    <button className="comparatore-btn comparatore-btn-svuota" onClick={svuotaComparatore}>
                         Svuota tutto
                     </button>
                 </div>

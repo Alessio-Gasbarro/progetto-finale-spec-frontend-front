@@ -27,8 +27,8 @@ const Prodotti = () => {
         aggiungiAlComparatore(prodotto);
         setShowPopup(true);
         setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);   // Avvia animazione uscita
-        setTimeout(() => setShowPopup(false), 1600);  // Rimuovi popup dopo animazione
+        setTimeout(() => setHidePopup(true), 1200);
+        setTimeout(() => setShowPopup(false), 1600);
     };
 
     if (loading) return <div>Caricamento...</div>;
@@ -43,10 +43,10 @@ const Prodotti = () => {
             )}
             <div className="prodotti-container">
                 {prodotti.map(prodotto => {
-                    const giaComparato = prodottiComparati.some(p => p.title === prodotto.title);
+                    const giaComparato = prodottiComparati.some(p => p.id === prodotto.id);
                     const disabilitaCompara = giaComparato || prodottiComparati.length >= 2;
                     return (
-                        <div className="prodotto-card" key={prodotto.id || prodotto.title}>
+                        <div className="prodotto-card" key={prodotto.id}>
                             <h3>{prodotto.title}</h3>
                             <p>Categoria: {prodotto.category}</p>
                             <div className="prodotto-bottoni">
