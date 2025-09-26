@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useComparatore } from "../context/ComparatoreContext";
 import { fetchAllInstruments } from "../api/Strumenti";
+import { useNavigate } from "react-router-dom";
 
 const Prodotti = () => {
     const [prodotti, setProdotti] = useState([]);
@@ -10,6 +11,7 @@ const Prodotti = () => {
     const [hidePopup, setHidePopup] = useState(false);
 
     const { aggiungiAlComparatore, prodottiComparati } = useComparatore();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchAllInstruments()
@@ -46,10 +48,15 @@ const Prodotti = () => {
                     const giaComparato = prodottiComparati.some(p => p.id === prodotto.id);
                     const disabilitaCompara = giaComparato || prodottiComparati.length >= 2;
                     return (
-                        <div className="prodotto-card" key={prodotto.id}>
+                        <div
+                            className="prodotto-card"
+                            key={prodotto.id}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => navigate(`/strumento/${prodotto.id}`)}
+                        >
                             <h3>{prodotto.title}</h3>
                             <p>Categoria: {prodotto.category}</p>
-                            <div className="prodotto-bottoni">
+                            <div className="prodotto-bottoni" onClick={e => e.stopPropagation()}>
                                 <a href="#" className="prodotto-btn">Preferiti</a>
                                 <a
                                     href="#"

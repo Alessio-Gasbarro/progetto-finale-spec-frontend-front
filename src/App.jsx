@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Comparatore from "./components/Comparatore";
 import Preferiti from "./components/Preferiti";
 import Prodotti from "./components/Prodotti";
+import DettaglioProdotto from "./components/DettaglioProdotto";
 import { ComparatoreProvider } from "./context/ComparatoreContext"; // importa il provider
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/comparatore" element={<Comparatore />} />
           <Route path="/preferiti" element={<Preferiti />} />
           <Route path="/strumenti" element={<Prodotti />} />
+          <Route path="/strumento/:id" element={<DettaglioProdotto />} />
         </Routes>
       </BrowserRouter>
     </ComparatoreProvider>
