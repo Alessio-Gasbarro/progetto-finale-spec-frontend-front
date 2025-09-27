@@ -17,7 +17,7 @@ export default function Home() {
                     <p>Con noi, hai sempre una media dei prezzi, del peso, origine ed altro...</p>
                     <p>Quindi cosa aspetti? Vai direttamente a guardare tutti gli strumenti disponibili!</p>
                 </div>
-                <Link to="/strumenti" class="icon-button"><i class="fas fa-search"></i></Link>
+                <Link to="/strumenti" className="all-button">Tutti gli Strumenti</Link>
             </div>
         </main>
     );
