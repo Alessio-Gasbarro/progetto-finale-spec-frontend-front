@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchInstrument } from "../api/Strumenti";
 import { useComparatore } from "../context/ComparatoreContext";
+import { usePreferiti } from "../context/PreferitiContext";
 
 export default function DettaglioProdotto() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { aggiungiAlComparatore } = useComparatore();
+    const { aggiungiAiPreferiti } = usePreferiti();
     const [prodotto, setProdotto] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -71,7 +73,10 @@ export default function DettaglioProdotto() {
                 </button>
                 <button
                     className="comparatore-btn"
-                    onClick={() => mostraPopup("Funzione preferiti non ancora disponibile!")}
+                    onClick={() => {
+                        aggiungiAiPreferiti(prodotto);
+                        mostraPopup("Strumento aggiunto ai Preferiti!");
+                    }}
                 >
                     Aggiungi ai preferiti
                 </button>
