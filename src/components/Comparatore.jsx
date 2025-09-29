@@ -1,44 +1,54 @@
-import React, { useEffect, useState } from "react";
-import { useComparatore } from "../context/ComparatoreContext";
-import { fetchInstrument } from "../api/Strumenti";
-import { Link } from "react-router-dom";
-import { usePopupNotify } from "../hooks/usePopupNotify";
-import PopupNotify from "./PopupNotify";
+import React, { useEffect, useState } from "react"; // Importa React e gli hook useEffect, useState
+import { useComparatore } from "../context/ComparatoreContext"; // Importa il context del comparatore
+import { fetchInstrument } from "../api/Strumenti"; // Importa la funzione per recuperare i dettagli dello strumento
+import { Link } from "react-router-dom"; // Importa Link per la navigazione SPA
+import { usePopupNotify } from "../hooks/usePopupNotify"; // Importa il custom hook per il popup
+import PopupNotify from "./PopupNotify"; // Importa il componente popup
 
 export default function Comparatore() {
+    // Ottiene le funzioni e dati dal context del comparatore
     const { prodottiComparati, rimuoviDalComparatore, svuotaComparatore } = useComparatore();
+    // Stato locale per i dettagli degli strumenti
     const [strumenti, setStrumenti] = useState([]);
+    // Stato locale per il caricamento
     const [loading, setLoading] = useState(false);
 
+    // Ottiene lo stato e la funzione per mostrare il popup dal custom hook
     const { show, hide, msg, type, showPopup } = usePopupNotify();
 
+    // Effetto che carica i dettagli degli strumenti selezionati per il confronto
     useEffect(() => {
+        // Funzione asincrona per caricare i dettagli
         async function caricaStrumenti() {
-            setLoading(true);
+            setLoading(true); // Imposta loading a true
+            // Recupera i dettagli di ogni strumento selezionato
             const dettagli = await Promise.all(
                 prodottiComparati.map(async prodotto => {
-                    const data = await fetchInstrument(prodotto.id);
-                    const dettagliCompleti = Array.isArray(data) ? data[0] : data;
-                    return dettagliCompleti || {};
+                    const data = await fetchInstrument(prodotto.id); // Recupera i dati dallo strumento
+                    const dettagliCompleti = Array.isArray(data) ? data[0] : data; // Gestisce eventuali array
+                    return dettagliCompleti || {}; // Restituisce i dettagli o oggetto vuoto
                 })
             );
-            setStrumenti(dettagli);
-            setLoading(false);
+            setStrumenti(dettagli); // Aggiorna lo stato locale con i dettagli
+            setLoading(false); // Imposta loading a false
         }
+        // Se ci sono prodotti comparati, carica i dettagli
         if (prodottiComparati.length > 0) {
             caricaStrumenti();
         } else {
-            setStrumenti([]);
+            setStrumenti([]); // Altrimenti svuota la lista
         }
-    }, [prodottiComparati]);
+    }, [prodottiComparati]); // Dipende dai prodotti comparati
 
+    // Funzione per rimuovere uno strumento dal comparatore e mostrare popup
     const handleRimuovi = (id) => {
-        rimuoviDalComparatore(id);
-        showPopup("Lo strumento è stato rimosso.", "remove");
+        rimuoviDalComparatore(id); // Rimuove dal comparatore
+        showPopup("Lo strumento è stato rimosso.", "remove"); // Mostra popup di rimozione
     };
 
     return (
         <main>
+            {/* Mostra il popup di notifica */}
             <PopupNotify show={show} hide={hide} msg={msg} type={type} />
             <h2 className="comparator-h2">Comparatore</h2>
             {strumenti.length === 0 && !loading ? (
@@ -47,7 +57,7 @@ export default function Comparatore() {
                 <div className="big-comparator">
                     <div className="comparatore-container">
                         {strumenti.map((s, idx) => {
-                            const m = s.musictool || s;
+                            const m = s.musictool || s; // Gestisce eventuale proprietà musictool
                             return (
                                 <div key={m.id || idx} className="comparatore-card">
                                     {m.image && (
