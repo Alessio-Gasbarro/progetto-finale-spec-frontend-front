@@ -2,24 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useComparatore } from "../context/ComparatoreContext";
 import { fetchInstrument } from "../api/Strumenti";
 import { Link } from "react-router-dom";
+import { usePopupNotify } from "../hooks/usePopupNotify";
+import PopupNotify from "./PopupNotify";
 
 export default function Comparatore() {
     const { prodottiComparati, rimuoviDalComparatore, svuotaComparatore } = useComparatore();
     const [strumenti, setStrumenti] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Popup state
-    const [showPopup, setShowPopup] = useState(false);
-    const [hidePopup, setHidePopup] = useState(false);
-    const [popupMsg, setPopupMsg] = useState("");
-
-    function mostraPopup(msg) {
-        setPopupMsg(msg);
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
-    }
+    const { show, hide, msg, type, showPopup } = usePopupNotify();
 
     useEffect(() => {
         async function caricaStrumenti() {
@@ -43,16 +34,12 @@ export default function Comparatore() {
 
     const handleRimuovi = (id) => {
         rimuoviDalComparatore(id);
-        mostraPopup("Lo strumento è stato rimosso.");
+        showPopup("Lo strumento è stato rimosso.", "remove");
     };
 
     return (
         <main>
-            {showPopup && (
-                <div className={`popup-notify popup-remove${hidePopup ? " popup-hide" : ""}`}>
-                    {popupMsg}
-                </div>
-            )}
+            <PopupNotify show={show} hide={hide} msg={msg} type={type} />
             <h2 className="comparator-h2">Comparatore</h2>
             {strumenti.length === 0 && !loading ? (
                 <p className="comparator-p">Nessun prodotto selezionato per il confronto.</p>

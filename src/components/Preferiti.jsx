@@ -1,41 +1,29 @@
 import { usePreferiti } from "../context/PreferitiContext";
 import { useComparatore } from "../context/ComparatoreContext";
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { usePopupNotify } from "../hooks/usePopupNotify";
+import PopupNotify from "./PopupNotify";
 
 export default function Preferiti() {
     const { preferiti, rimuoviDaiPreferiti } = usePreferiti();
     const { aggiungiAlComparatore, prodottiComparati } = useComparatore();
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [hidePopup, setHidePopup] = useState(false);
-    const [popupMsg, setPopupMsg] = useState("");
+    const { show, hide, msg, type, showPopup } = usePopupNotify();
 
     const handleCompara = prodotto => {
         aggiungiAlComparatore(prodotto);
-        setPopupMsg("Strumento aggiunto al Comparatore!");
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
+        showPopup("Strumento aggiunto al Comparatore!", "success");
     };
 
     const handleRimuovi = id => {
         rimuoviDaiPreferiti(id);
-        setPopupMsg("Strumento rimosso dai Preferiti!");
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
+        showPopup("Strumento rimosso dai Preferiti!", "remove");
     };
 
     return (
         <>
-            {showPopup && (
-                <div className={`popup-notify popup-success${hidePopup ? " popup-hide" : ""}`}>
-                    {popupMsg}
-                </div>
-            )}
+            <PopupNotify show={show} hide={hide} msg={msg} type={type} />
             <h2 className="comparator-h2">Preferiti</h2>
             {preferiti.length === 0 ? (
                 <div className="comparator-p">Nessun prodotto nei preferiti.</div>

@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchInstrument } from "../api/Strumenti";
 import { useComparatore } from "../context/ComparatoreContext";
 import { usePreferiti } from "../context/PreferitiContext";
+import { usePopupNotify } from "../hooks/usePopupNotify";
+import PopupNotify from "./PopupNotify";
 
 export default function DettaglioProdotto() {
     const { id } = useParams();
@@ -12,18 +14,7 @@ export default function DettaglioProdotto() {
     const [prodotto, setProdotto] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Popup state
-    const [showPopup, setShowPopup] = useState(false);
-    const [hidePopup, setHidePopup] = useState(false);
-    const [popupMsg, setPopupMsg] = useState("");
-
-    function mostraPopup(msg) {
-        setPopupMsg(msg);
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
-    }
+    const { show, hide, msg, type, showPopup } = usePopupNotify();
 
     useEffect(() => {
         async function carica() {
@@ -40,11 +31,7 @@ export default function DettaglioProdotto() {
 
     return (
         <>
-            {showPopup && (
-                <div className={`popup-notify popup-success${hidePopup ? " popup-hide" : ""}`}>
-                    {popupMsg}
-                </div>
-            )}
+            <PopupNotify show={show} hide={hide} msg={msg} type={type} />
             <div className="dettaglio-prodotto-wrapper">
                 <div className="dettaglio-prodotto-img">
                     {prodotto.image && (
@@ -75,7 +62,7 @@ export default function DettaglioProdotto() {
                     className="comparatore-btn"
                     onClick={() => {
                         aggiungiAiPreferiti(prodotto);
-                        mostraPopup("Strumento aggiunto ai Preferiti!");
+                        showPopup("Strumento aggiunto ai Preferiti!", "success");
                     }}
                 >
                     Aggiungi ai preferiti
@@ -84,7 +71,7 @@ export default function DettaglioProdotto() {
                     className="comparatore-btn"
                     onClick={() => {
                         aggiungiAlComparatore(prodotto);
-                        mostraPopup("Strumento aggiunto al Comparatore!");
+                        showPopup("Strumento aggiunto al Comparatore!", "success");
                     }}
                 >
                     Aggiungi al comparatore

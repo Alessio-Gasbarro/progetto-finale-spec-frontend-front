@@ -3,6 +3,8 @@ import { useComparatore } from "../context/ComparatoreContext";
 import { fetchAllInstruments } from "../api/Strumenti";
 import { useNavigate } from "react-router-dom";
 import { usePreferiti } from "../context/PreferitiContext";
+import { usePopupNotify } from "../hooks/usePopupNotify";
+import PopupNotify from "./PopupNotify";
 
 const CATEGORIE = [
     "Tutte",
@@ -18,15 +20,13 @@ const Prodotti = () => {
     const [prodotti, setProdotti] = useState([]);
     const [loading, setLoading] = useState(true);
     const [errore, setErrore] = useState(null);
-    const [showPopup, setShowPopup] = useState(false);
-    const [hidePopup, setHidePopup] = useState(false);
-    const [popupMsg, setPopupMsg] = useState("");
     const [search, setSearch] = useState("");
     const [sortOrder, setSortOrder] = useState("az");
     const [categoria, setCategoria] = useState("Tutte");
 
     const { aggiungiAlComparatore, prodottiComparati } = useComparatore();
     const { aggiungiAiPreferiti } = usePreferiti();
+    const { show, hide, msg, type, showPopup } = usePopupNotify();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,20 +43,12 @@ const Prodotti = () => {
 
     const handleCompara = prodotto => {
         aggiungiAlComparatore(prodotto);
-        setPopupMsg("Strumento aggiunto al Comparatore!");
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
+        showPopup("Strumento aggiunto al Comparatore!", "success");
     };
 
     const handlePreferiti = prodotto => {
         aggiungiAiPreferiti(prodotto);
-        setPopupMsg("Strumento aggiunto ai Preferiti!");
-        setShowPopup(true);
-        setHidePopup(false);
-        setTimeout(() => setHidePopup(true), 1200);
-        setTimeout(() => setShowPopup(false), 1600);
+        showPopup("Strumento aggiunto ai Preferiti!", "success");
     };
 
     // Filtra e ordina i prodotti
@@ -78,11 +70,7 @@ const Prodotti = () => {
 
     return (
         <>
-            {showPopup && (
-                <div className={`popup-notify popup-success${hidePopup ? " popup-hide" : ""}`}>
-                    {popupMsg}
-                </div>
-            )}
+            <PopupNotify show={show} hide={hide} msg={msg} type={type} />
             <h2 className="comparator-h2">Tutti gli Strumenti</h2>
             <div className="prodotti-filtri-bar" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
                 <select
