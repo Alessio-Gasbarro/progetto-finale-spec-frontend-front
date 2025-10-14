@@ -18,8 +18,8 @@ export function ComparatoreProvider({ children }) {
         setProdottiComparati(prev => {
             // Se il prodotto è già presente, non lo aggiunge
             if (prev.find(p => p.id === prodotto.id)) return prev;
-            // Se ci sono già 2 prodotti, non aggiunge altri
-            if (prev.length >= 2) return prev;
+            // Modifica: ora consentiamo fino a 5 prodotti invece di 2
+            if (prev.length >= 5) return prev;
             // Aggiunge il prodotto (solo id, title, category per fallback)
             return [...prev, { id: prodotto.id, title: prodotto.title, category: prodotto.category }];
         });

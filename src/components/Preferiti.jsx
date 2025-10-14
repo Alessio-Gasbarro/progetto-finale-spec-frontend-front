@@ -37,7 +37,7 @@ export default function Preferiti() {
                 <div className="prodotti-container">
                     {preferiti.map(prodotto => {
                         const giaComparato = prodottiComparati.some(p => p.id === prodotto.id); // Verifica se già comparato
-                        const disabilitaCompara = giaComparato || prodottiComparati.length >= 2; // Disabilita se già comparato o troppi
+                        const disabilitaCompara = giaComparato || prodottiComparati.length >= 5; // Disabilita se già comparato o troppi
                         return (
                             <div className="prodotto-card" key={prodotto.id}>
                                 <h3>{prodotto.title}</h3>

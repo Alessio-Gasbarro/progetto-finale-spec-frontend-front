@@ -249,40 +249,47 @@ header ul li a:hover {
 
 .comparatore-container {
   display: flex;
-  gap: 48px;
+  gap: 20px;
   margin-top: 32px;
   justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  align-items: center;
+  flex-wrap: nowrap;
   width: 100%;
+  max-width: 100%;
   position: relative;
+  overflow-x: auto;
+  padding: 20px 40px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
 }
 
 .comparatore-card {
   border: 2px solid #fe5416;
   border-radius: 18px;
-  padding: 32px 28px;
-  width: 420px;
-  min-height: 600px;
+  padding: 20px 18px;
+  width: 320px;
+  min-height: 520px;
   background: #fffbe8;
   box-shadow: 0 4px 24px #ffb97a33;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 0 0 auto;
+  scroll-snap-align: center;
 }
 
 .comparatore-img {
-  width: 320px;
-  height: 220px;
+  width: 260px;
+  height: 160px;
   object-fit: contain;
   border-radius: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
   background: #f3f3f3;
 }
 
 .comparatore-title {
-  font-size: 2rem;
-  margin-bottom: 12px;
+  font-size: 1.6rem;
+  margin-bottom: 10px;
   color: #fe5416;
   text-align: center;
 }
@@ -333,6 +340,43 @@ header ul li a:hover {
 .comparatore-btn-svuota:focus {
   background-color: #fe5416;
   color: #fff;
+}
+
+@media (max-width: 1400px) {
+  .comparatore-container {
+    gap: 18px;
+  }
+
+  .comparatore-card {
+    width: 300px;
+    min-height: 500px;
+  }
+
+  .comparatore-img {
+    width: 240px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .comparatore-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: visible;
+  }
+
+  .comparatore-card {
+    width: calc(50% - 20px);
+    min-width: 260px;
+  }
+}
+
+@media (max-width: 640px) {
+  .comparatore-card {
+    width: 100%;
+    max-width: 420px;
+    min-height: auto;
+  }
 }
 
 /* Popup */
