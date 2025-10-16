@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react"; // Importa React e gli hook useEffect, useState
-import { useComparatore } from "../context/ComparatoreContext"; // Importa il context del comparatore
-import { fetchAllInstruments } from "../api/Strumenti"; // Importa la funzione per recuperare tutti gli strumenti
-import { useNavigate } from "react-router-dom"; // Importa useNavigate per la navigazione SPA
-import { usePreferiti } from "../context/PreferitiContext"; // Importa il context dei preferiti
-import { usePopupNotify } from "../hooks/usePopupNotify"; // Importa il custom hook per il popup
-import PopupNotify from "./PopupNotify"; // Importa il componente popup
+import React, { useEffect, useState, useMemo } from "react";
+import { useComparatore } from "../context/ComparatoreContext";
+import { fetchAllInstruments } from "../api/Strumenti";
+import { useNavigate } from "react-router-dom";
+import { usePreferiti } from "../context/PreferitiContext";
+import { usePopupNotify } from "../hooks/usePopupNotify";
+import PopupNotify from "./PopupNotify";
+import useDebounce from "../hooks/useDebounce";
 
-// Definisce le categorie disponibili
 const CATEGORIE = [
     "Tutte",
     "Corde",
@@ -18,79 +18,87 @@ const CATEGORIE = [
 ];
 
 const Prodotti = () => {
-    // Stato locale per la lista dei prodotti
+    // Lista di prodotti recuperati dall'API
     const [prodotti, setProdotti] = useState([]);
-    // Stato locale per il caricamento
+    // Stato di caricamento
     const [loading, setLoading] = useState(true);
-    // Stato locale per eventuali errori
+    // Stato di errore
     const [errore, setErrore] = useState(null);
-    // Stato locale per la ricerca
+    // Stato per la ricerca immediata (input)
     const [search, setSearch] = useState("");
-    // Stato locale per l'ordinamento
+    // Stato per l'ordinamento
     const [sortOrder, setSortOrder] = useState("az");
-    // Stato locale per la categoria selezionata
+    // Stato per la categoria selezionata
     const [categoria, setCategoria] = useState("Tutte");
 
-    // Ottiene le funzioni dal context del comparatore
+    // Context e hook vari
     const { aggiungiAlComparatore, prodottiComparati } = useComparatore();
-    // Ottiene la funzione dal context dei preferiti
     const { aggiungiAiPreferiti } = usePreferiti();
-    // Ottiene lo stato e la funzione per mostrare il popup dal custom hook
     const { show, hide, msg, type, showPopup } = usePopupNotify();
-    // Ottiene la funzione di navigazione
     const navigate = useNavigate();
 
-    // Effetto che carica tutti gli strumenti all'avvio
+    // Hook debounce: ritarda l'aggiornamento del valore di ricerca effettivo
+    const debouncedSearch = useDebounce(search, 300); // 300ms di default
+
+    // Carica i prodotti all'avvio
     useEffect(() => {
         fetchAllInstruments()
             .then(data => {
-                setProdotti(data); // Aggiorna lo stato con i prodotti
-                setLoading(false); // Imposta loading a false
+                setProdotti(data);
+                setLoading(false);
             })
             .catch(error => {
-                setErrore(error.message); // Aggiorna lo stato errore
-                setLoading(false); // Imposta loading a false
+                setErrore(error.message);
+                setLoading(false);
             });
-    }, []); // Solo all'avvio
+    }, []);
 
-    // Funzione per aggiungere al comparatore e mostrare popup
+    // Handler per aggiungere al comparatore e mostrare popup
     const handleCompara = prodotto => {
-        aggiungiAlComparatore(prodotto); // Aggiunge al comparatore
-        showPopup("Strumento aggiunto al Comparatore!", "success"); // Mostra popup
+        aggiungiAlComparatore(prodotto);
+        showPopup("Strumento aggiunto al Comparatore!", "success");
     };
 
-    // Funzione per aggiungere ai preferiti e mostrare popup
+    // Handler per aggiungere ai preferiti e mostrare popup
     const handlePreferiti = prodotto => {
-        aggiungiAiPreferiti(prodotto); // Aggiunge ai preferiti
-        showPopup("Strumento aggiunto ai Preferiti!", "success"); // Mostra popup
+        aggiungiAiPreferiti(prodotto);
+        showPopup("Strumento aggiunto ai Preferiti!", "success");
     };
 
-    // Filtra e ordina i prodotti in base a ricerca, categoria e ordinamento
-    const prodottiFiltrati = prodotti
-        .filter(p =>
-            p.title.toLowerCase().includes(search.toLowerCase()) &&
-            (categoria === "Tutte" || p.category === categoria)
-        )
-        .sort((a, b) => {
-            if (sortOrder === "az") {
-                return a.title.localeCompare(b.title);
-            } else {
-                return b.title.localeCompare(a.title);
-            }
+    // Calcolo memoizzato dei prodotti filtrati e ordinati.
+    // Viene ricalcolato solo quando cambiano prodotti, debouncedSearch, categoria o sortOrder.
+    const prodottiFiltrati = useMemo(() => {
+        // Normalizza la ricerca debounced
+        const q = (debouncedSearch || "").trim().toLowerCase();
+
+        // Filtra per titolo e categoria
+        const filtrati = prodotti.filter(p => {
+            const title = (p.title || "").toString();
+            const matchTitle = title.toLowerCase().includes(q);
+            const matchCategory = categoria === "Tutte" || p.category === categoria;
+            return matchTitle && matchCategory;
         });
 
-    // Se sta caricando, mostra un messaggio di caricamento
+        // Ordina in base a sortOrder
+        filtrati.sort((a, b) => {
+            const ta = (a.title || "").toString();
+            const tb = (b.title || "").toString();
+            if (sortOrder === "az") return ta.localeCompare(tb);
+            return tb.localeCompare(ta);
+        });
+
+        return filtrati;
+    }, [prodotti, debouncedSearch, categoria, sortOrder]);
+
     if (loading) return <div>Caricamento...</div>;
-    // Se c'è un errore, mostra il messaggio di errore
     if (errore) return <div>Errore: {errore}</div>;
 
     return (
         <>
-            {/* Mostra il popup di notifica */}
             <PopupNotify show={show} hide={hide} msg={msg} type={type} />
             <h2 className="comparator-h2">Tutti gli Strumenti</h2>
-            <div className="prodotti-filtri-bar" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
-                {/* Select per ordinamento */}
+
+            <div className="prodotti-filtri-bar">
                 <select
                     value={sortOrder}
                     onChange={e => setSortOrder(e.target.value)}
@@ -99,7 +107,8 @@ const Prodotti = () => {
                     <option value="az">A → Z</option>
                     <option value="za">Z → A</option>
                 </select>
-                {/* Input per ricerca */}
+
+                {/* Input di ricerca: aggiorna lo stato immediato "search" */}
                 <input
                     type="text"
                     placeholder="Cerca per titolo..."
@@ -107,7 +116,7 @@ const Prodotti = () => {
                     onChange={e => setSearch(e.target.value)}
                     className="search-bar"
                 />
-                {/* Select per categoria */}
+
                 <select
                     value={categoria}
                     onChange={e => setCategoria(e.target.value)}
@@ -118,46 +127,38 @@ const Prodotti = () => {
                     ))}
                 </select>
             </div>
+
             <div className="prodotti-container">
                 {prodottiFiltrati.map(prodotto => {
-                    const giaComparato = prodottiComparati.some(p => p.id === prodotto.id); // Verifica se già comparato
-                    const disabilitaCompara = giaComparato || prodottiComparati.length >= 5; // Disabilita se già comparato o troppi
+                    const giaComparato = prodottiComparati.some(p => p.id === prodotto.id);
+                    const disabilitaCompara = giaComparato || prodottiComparati.length >= 5;
                     return (
                         <div
                             className="prodotto-card"
                             key={prodotto.id}
-                            style={{ cursor: "pointer" }}
                             onClick={() => navigate(`/strumento/${prodotto.id}`)}
+                            style={{ cursor: "pointer" }}
                         >
                             <h3>{prodotto.title}</h3>
                             <p>Categoria: {prodotto.category}</p>
                             <div className="prodotto-bottoni" onClick={e => e.stopPropagation()}>
-                                <a
-                                    href="#"
+                                <button
                                     className="prodotto-btn"
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        handlePreferiti(prodotto); // Aggiunge ai preferiti
-                                    }}
+                                    onClick={() => handlePreferiti(prodotto)}
                                 >
                                     Preferiti
-                                </a>
-                                <a
-                                    href="#"
+                                </button>
+                                <button
                                     className="prodotto-btn"
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        if (!disabilitaCompara) handleCompara(prodotto); // Aggiunge al comparatore
-                                    }}
+                                    onClick={() => { if (!disabilitaCompara) handleCompara(prodotto); }}
+                                    disabled={disabilitaCompara}
                                     style={{
                                         pointerEvents: disabilitaCompara ? "none" : "auto",
                                         opacity: disabilitaCompara ? 0.5 : 1
                                     }}
-                                    tabIndex={disabilitaCompara ? -1 : 0}
-                                    aria-disabled={disabilitaCompara}
                                 >
                                     Compara
-                                </a>
+                                </button>
                             </div>
                         </div>
                     );
