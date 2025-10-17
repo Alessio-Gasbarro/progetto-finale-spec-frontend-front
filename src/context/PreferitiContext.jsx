@@ -1,35 +1,31 @@
-import React, { createContext, useContext, useState } from "react"; // Importa React e gli hook necessari
+import React, { createContext, useContext } from "react";
+import useLocalStorage from "../hooks/useLocalStorage.jsx";
 
 // Crea il context per i preferiti
 const PreferitiContext = createContext();
 
-// Hook custom per accedere facilmente al context dei preferiti
+// Hook per accedere al context
 export function usePreferiti() {
-    return useContext(PreferitiContext); // Restituisce il valore del context
+    return useContext(PreferitiContext);
 }
 
-// Provider che gestisce lo stato e le funzioni dei preferiti
+// Provider con persistenza localStorage
 export function PreferitiProvider({ children }) {
-    // Stato locale per la lista dei preferiti
-    const [preferiti, setPreferiti] = useState([]);
+    const [preferiti, setPreferiti] = useLocalStorage("preferiti", []);
 
-    // Funzione per aggiungere un prodotto ai preferiti
     function aggiungiAiPreferiti(prodotto) {
         setPreferiti(prev =>
-            // Se il prodotto è già presente, non lo aggiunge
-            prev.find(p => p.id === prodotto.id) ? prev : [...prev, prodotto]
+            prev.some(p => p.id === prodotto.id) ? prev : [...prev, prodotto]
         );
     }
 
-    // Funzione per rimuovere un prodotto dai preferiti tramite id
     function rimuoviDaiPreferiti(id) {
         setPreferiti(prev => prev.filter(p => p.id !== id));
     }
 
-    // Ritorna il provider con stato e funzioni disponibili nel value
     return (
         <PreferitiContext.Provider value={{ preferiti, aggiungiAiPreferiti, rimuoviDaiPreferiti }}>
-            {children} {/* Renderizza i figli all'interno del provider */}
+            {children}
         </PreferitiContext.Provider>
     );
 }

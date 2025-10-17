@@ -1,49 +1,41 @@
-import React, { createContext, useContext, useState } from "react"; // Importa React e gli hook necessari
+import React, { createContext, useContext } from "react";
+import useLocalStorage from "../hooks/useLocalStorage.jsx";
 
 // Crea il context per il comparatore
 const ComparatoreContext = createContext();
 
-// Hook custom per accedere facilmente al context del comparatore
+// Hook per accedere al context
 export function useComparatore() {
-    return useContext(ComparatoreContext); // Restituisce il valore del context
+    return useContext(ComparatoreContext);
 }
 
-// Provider che gestisce lo stato e le funzioni del comparatore
-export function ComparatoreProvider({ children }) {
-    // Stato locale per la lista dei prodotti comparati
-    const [prodottiComparati, setProdottiComparati] = useState([]);
+// Limite massimo elementi nel comparatore
+const MAX_COMPARE = 5;
 
-    // Funzione per aggiungere un prodotto al comparatore
+// Provider con persistenza localStorage
+export function ComparatoreProvider({ children }) {
+    const [prodottiComparati, setProdottiComparati] = useLocalStorage("comparatore", []);
+
     function aggiungiAlComparatore(prodotto) {
         setProdottiComparati(prev => {
-            // Se il prodotto è già presente, non lo aggiunge
-            if (prev.find(p => p.id === prodotto.id)) return prev;
-            // Modifica: ora consentiamo fino a 5 prodotti invece di 2
-            if (prev.length >= 5) return prev;
-            // Aggiunge il prodotto (solo id, title, category per fallback)
+            if (!prodotto || prodotto.id == null) return prev;
+            if (prev.some(p => p.id === prodotto.id)) return prev;
+            if (prev.length >= MAX_COMPARE) return prev;
             return [...prev, { id: prodotto.id, title: prodotto.title, category: prodotto.category }];
         });
     }
 
-    // Funzione per rimuovere un prodotto dal comparatore tramite id
     function rimuoviDalComparatore(id) {
         setProdottiComparati(prev => prev.filter(p => p.id !== id));
     }
 
-    // Funzione per svuotare completamente il comparatore
     function svuotaComparatore() {
         setProdottiComparati([]);
     }
 
-    // Ritorna il provider con stato e funzioni disponibili nel value
     return (
-        <ComparatoreContext.Provider value={{
-            prodottiComparati, // Lista dei prodotti comparati
-            aggiungiAlComparatore, // Funzione per aggiungere
-            rimuoviDalComparatore, // Funzione per rimuovere
-            svuotaComparatore // Funzione per svuotare
-        }}>
-            {children} {/* Renderizza i figli all'interno del provider */}
+        <ComparatoreContext.Provider value={{ prodottiComparati, aggiungiAlComparatore, rimuoviDalComparatore, svuotaComparatore, MAX_COMPARE }}>
+            {children}
         </ComparatoreContext.Provider>
     );
 }
